@@ -1,0 +1,6 @@
+@DataslateAPI_HostAddress = http://localhost:5027
+
+GET {{DataslateAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
