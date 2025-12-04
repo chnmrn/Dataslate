@@ -1,4 +1,6 @@
 ﻿using DataslateAPI.Data;
+using DataslateAPI.DTOs.Projects;
+using DataslateAPI.DTOs.Tasks;
 using DataslateAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +20,24 @@ namespace DataslateAPI.Controllers
 
         // GET: api/tasks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskItem>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<ReadTaskDTO>>> GetTasks()
         {
-            // LINQ shows all the tasks
-            return await _context.TaskItems
-                .ToListAsync();
+            var tasks = await _context.TaskItems.ToListAsync();
+
+            var readTaskDTOs = tasks.Select(t => new ReadTaskDTO
+            {
+                Id = t.Id,
+                taskTitle = t.taskTitle,
+                status = t.status,
+                projectName = t.Project != null ? t.Project.projectName : null
+            }).ToList();
+
+            return Ok(readTaskDTOs);
         }
 
         // GET: api/tasks/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskItem>> GetTask(int id)
+        public async Task<ActionResult<ReadTaskDTO>> GetTask(int id)
         {
             // LINQ shows a specific task by id
             var task = await _context.TaskItems
@@ -36,47 +46,62 @@ namespace DataslateAPI.Controllers
             if (task == null)
                 return NotFound("Task not found in the database");
 
-            return task;
+            var readTaskDTOs = new ReadTaskDTO
+            {
+                Id = task.Id,
+                taskTitle = task.taskTitle,
+                status = task.status,
+                projectName = task.Project != null ? task.Project.projectName : null
+            };
+
+            return Ok(readTaskDTOs);
         }
 
         // POST: api/tasks
         [HttpPost]
-        public async Task<ActionResult<User>> CreateTask(TaskItem task)
+        public async Task<ActionResult<ReadTaskDTO>> CreateTask(CreateTaskDTO task)
         {
-            // Add the new task to the database
-            _context.TaskItems.Add(task);
+            var newTask = new TaskItem
+            {
+                taskTitle = task.taskTitle,
+                status = task.status,
+                projectId = task.projectId
+            };
+
+            _context.TaskItems.Add(newTask);
             await _context.SaveChangesAsync();
 
-            // Return the created task with a 201 status code
-            return CreatedAtAction(nameof(GetTask), new { id = task.Id }, task);
+            // Cargar la relación con Project para devolver el nombre
+            await _context.Entry(newTask).Reference(t => t.Project).LoadAsync();
+
+            var readTaskDTO = new ReadTaskDTO
+            {
+                Id = newTask.Id,
+                taskTitle = newTask.taskTitle,
+                status = newTask.status,
+                projectName = newTask.Project?.projectName
+            };
+
+            return CreatedAtAction(nameof(GetTask), new { id = newTask.Id }, readTaskDTO);
+
         }
 
         // PUT: api/tasks/{id}
         [HttpPut]
-        public async Task<ActionResult> UpdateTask(int id, TaskItem task)
+        public async Task<ActionResult> UpdateTask(int id, UpdateTaskDTO task)
         {
-            if (id != task.Id)
-                return BadRequest("Task not found in the database or wrong Id");
+            //
+            var existingTask = await _context.TaskItems.FindAsync(id);
+            if (existingTask == null)
+                return NotFound("Task not found in the database");
 
-            _context.Entry(task).State = EntityState.Modified;
+            // Map updated fields
+            existingTask.taskTitle = task.taskTitle;
+            existingTask.status = task.status;
 
-            try
-            {
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Check if the task still exists
-                if (!_context.TaskItems.Any(e => e.Id == id))
-                    return NotFound("Task not found in the database");
-                else
-                    // Rethrow the exception if it's another issue
-                    throw;
-            }
-
-            // Return NoContent to indicate successful update
+            await _context.SaveChangesAsync();
             return NoContent();
+
 
         }
 

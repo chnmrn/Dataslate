@@ -1,10 +1,12 @@
 ﻿using DataslateAPI.Data;
+using DataslateAPI.DTOs;
+using DataslateAPI.DTOs.Projects;
+using DataslateAPI.DTOs.Tasks;
+using DataslateAPI.DTOs.Users;
 using DataslateAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DataslateAPI.DTOs;
-using DataslateAPI.DTOs.Projects;
 
 namespace DataslateAPI.Controllers
 {
@@ -20,17 +22,26 @@ namespace DataslateAPI.Controllers
 
         // GET: api/projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> GetProjects()
         {
-            // LINQ Include related Tasks when fetching Projects
-            return await _context.Projects
-                .Include(u => u.Tasks)
-                .ToListAsync();
+            // Fetch all projects from the database
+            var projects = await _context.Projects.Include(u => u.Tasks).ToListAsync();
+
+            var readProjectDTOs = projects.Select(p => new ReadProjectDTO
+            {
+                Id = p.Id,
+                projectName = p.projectName,
+                description = p.description,
+                GitRepository = p.GitRepository,
+                userName = p.User != null ? p.User.username : null
+            }).ToList();
+
+            return Ok(readProjectDTOs);
         }
 
         // GET: api/projects/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<ReadProjectWithTasksDTO>> GetProject(int id)
         {
             // LINQ Include related Tasks when fetching a specific Project
             var project = await _context.Projects
@@ -40,54 +51,76 @@ namespace DataslateAPI.Controllers
             if (project == null)
                 return NotFound("Project not found in the database");
 
-            return project;
+            // Map Project entity to ReadProjectWithTasksDTO
+            var readProjectDTO = new ReadProjectWithTasksDTO
+            {
+                Id = project.Id,
+                projectName = project.projectName,
+                description = project.description,
+                GitRepository = project.GitRepository,
+                userName = project.User != null ? project.User.username : null,
+                Tasks = project.Tasks.Select(t => new ReadTaskDTO
+                {
+                    Id = t.Id,
+                    taskTitle = t.taskTitle,
+                    status = t.status,
+                    projectName = project.projectName
+                }).ToList()
+            };
+
+            return Ok(readProjectDTO);
         }
 
         // POST: api/projects
         [HttpPost]
-        public async Task<ActionResult<Project>> CreateProject(CreateProjectDTO createDTO)
+        public async Task<ActionResult<ReadProjectDTO>> CreateProject(CreateProjectDTO project)
         {
-            var project = new Project
+            var newProject = new Project
             {
-                projectName = createDTO.projectName,
-                description = createDTO.description,
-                GitRepository = createDTO.GitRepository,
-                userId = createDTO.userId
+                projectName = project.projectName,
+                description = project.description,
+                GitRepository = project.GitRepository,
+                userId = project.userId
             };
 
-            _context.Projects.Add(project);
+            _context.Projects.Add(newProject);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProject), new { id = project.Id }, project);
+            // Cargar la relación con User para devolver el nombre
+            await _context.Entry(newProject).Reference(p => p.User).LoadAsync();
+
+            var readProjectDTO = new ReadProjectDTO
+            {
+                Id = newProject.Id,
+                projectName = newProject.projectName,
+                description = newProject.description,
+                GitRepository = newProject.GitRepository,
+                userName = newProject.User?.username
+            };
+
+            return CreatedAtAction(nameof(GetProject), new { id = newProject.Id }, readProjectDTO);
+
         }
 
 
         // PUT: api/projects/{id}
         [HttpPut]
-        public async Task<ActionResult> UpdateProject(int id, Project project)
+        public async Task<ActionResult> UpdateProject(int id, UpdateProjectDTO project)
         {
-            if (id != project.Id)
-                return BadRequest("Project not found in the database or wrong Id");
+            // Find the existing project
+            var existingProject = await _context.Projects.FindAsync(id);
+            if (existingProject == null)
+                return NotFound("Project not found in the database");
 
-            _context.Entry(project).State = EntityState.Modified;
+            // Map updated fields
+            existingProject.projectName = project.projectName;
+            existingProject.description = project.description;
+            existingProject.GitRepository = project.GitRepository;
 
-            try
-            {
-                // Save changes to the database
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                // Check if the user still exists
-                if (!_context.Projects.Any(e => e.Id == id))
-                    return NotFound("Task not found in the database");
-                else
-                    // Rethrow the exception if it's another issue
-                    throw;
-            }
-
-            // Return NoContent to indicate successful update
+            await _context.SaveChangesAsync();
             return NoContent();
+
+
 
         }
 

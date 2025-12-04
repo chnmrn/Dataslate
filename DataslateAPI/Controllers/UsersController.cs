@@ -1,8 +1,11 @@
 ﻿using DataslateAPI.Data;
 using DataslateAPI.Models;
+using DataslateAPI.DTOs.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
+using DataslateAPI.DTOs.Projects;
 
 namespace DataslateAPI.Controllers
 {
@@ -18,17 +21,26 @@ namespace DataslateAPI.Controllers
 
         // GET: api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<ReadUserDTO>>> GetUsers()
         {
-            // LINQ Include related Projects when fetching Users
-            return await _context.Users
-                .Include(u => u.Projects)
-                .ToListAsync();
+            // Fetch all users from the database
+            var users = await _context.Users.ToListAsync();
+
+            // Map User entities to ReadUserDTOs
+            var readUserDTOs = users.Select(u => new ReadUserDTO
+            {
+                Id = u.Id,
+                Username = u.username,
+                Email = u.email
+            }).ToList();
+
+            return Ok(readUserDTOs);
+
         }
 
         // GET: api/users/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<ReadUserWithProjectsDTO>> GetUser(int id)
         {
             // LINQ Include related Projects when fetching a specific User
             var user = await _context.Users
@@ -36,31 +48,69 @@ namespace DataslateAPI.Controllers
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user == null) 
-                return NotFound("User not found in the database");           
+                return NotFound("User not found in the database");
 
-            return user;
+            // Map User entity to ReadUserWithProjectsDTO
+            var readUserDTO = new ReadUserWithProjectsDTO
+            {
+                Id = user.Id,
+                username = user.username,
+                email = user.email,
+                Projects = user.Projects.Select(p => new ReadProjectDTO
+                {
+                    Id = p.Id,
+                    projectName = p.projectName,
+                    description = p.description,
+                    GitRepository = p.GitRepository,
+                    userName = user.username
+                }).ToList()
+            };
+
+            return Ok(readUserDTO);
         }
 
         // POST: api/users
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        public async Task<ActionResult<ReadUserDTO>> CreateUser(CreateUserDTO user)
         {
+            var newUser = new User
+            {
+                username = user.username,
+                email = user.email,
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password) // Hash the password when creating the user
+            };
+
+
             // Add the new user to the database
-            _context.Users.Add(user); 
+            _context.Users.Add(newUser); 
             await _context.SaveChangesAsync();
 
+            // Map the created User entity to ReadUserDTO
+            var readUserDTO = new ReadUserDTO
+            {
+                Id = newUser.Id,
+                Username = newUser.username,
+                Email = newUser.email
+            };
+
             // Return the created user with a 201 status code
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = newUser.Id }, readUserDTO);
         }
 
         // PUT: api/users/{id}
         [HttpPut]
-        public async Task<ActionResult> UpdateUser(int id, User user)
+        public async Task<ActionResult> UpdateUser(int id, UpdateUserDTO user)
         {
-            if (id != user.Id)
-                return BadRequest("User not found in the database or wrong Id");
+            var existingUser = await _context.Users.FindAsync(id);
+            if (existingUser == null)
+                return NotFound("User not found in the database");
 
-            _context.Entry(user).State = EntityState.Modified;
+            existingUser.email = user.Email;
+            if (!string.IsNullOrEmpty(user.NewPassword))
+            {
+                // Hash the new password before updating
+                existingUser.passwordHash = BCrypt.Net.BCrypt.HashPassword(user.NewPassword);
+            }
 
             try
             {
@@ -71,7 +121,7 @@ namespace DataslateAPI.Controllers
             {
                 // Check if the user still exists
                 if (!_context.Users.Any(e => e.Id == id))
-                    return NotFound("Task not found in the database");
+                    return NotFound("User not found in the database");
                 else
                     // Rethrow the exception if it's another issue
                     throw;
