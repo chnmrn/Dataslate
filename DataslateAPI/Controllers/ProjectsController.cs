@@ -4,12 +4,14 @@ using DataslateAPI.DTOs.Projects;
 using DataslateAPI.DTOs.Tasks;
 using DataslateAPI.DTOs.Users;
 using DataslateAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataslateAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ProjectsController : ControllerBase
@@ -24,8 +26,11 @@ namespace DataslateAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> GetProjects()
         {
-            // Fetch all projects from the database
-            var projects = await _context.Projects.Include(u => u.Tasks).ToListAsync();
+            // Fetch all projects and users from the database
+            var projects = await _context.Projects
+                .Include(u => u.Tasks)
+                .Include(u => u.User)
+                .ToListAsync();
 
             var readProjectDTOs = projects.Select(p => new ReadProjectDTO
             {
@@ -43,9 +48,10 @@ namespace DataslateAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadProjectWithTasksDTO>> GetProject(int id)
         {
-            // LINQ Include related Tasks when fetching a specific Project
+            // LINQ Include related Tasks and User when fetching a specific Project
             var project = await _context.Projects
                 .Include(u => u.Tasks)
+                .Include(u => u.User)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (project == null)
@@ -104,7 +110,7 @@ namespace DataslateAPI.Controllers
 
 
         // PUT: api/projects/{id}
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProject(int id, UpdateProjectDTO project)
         {
             // Find the existing project
@@ -117,10 +123,26 @@ namespace DataslateAPI.Controllers
             existingProject.description = project.description;
             existingProject.GitRepository = project.GitRepository;
 
-            await _context.SaveChangesAsync();
+            try 
+            {
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+            } catch (DbUpdateConcurrencyException)
+            {
+                // Check if the project still exists
+                if (!_context.Projects.Any(e => e.Id == id))
+                {
+                    return NotFound("Project not found in the database");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            // Return 204 No Content on successful update
             return NoContent();
-
-
 
         }
 

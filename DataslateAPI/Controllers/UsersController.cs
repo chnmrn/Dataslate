@@ -30,8 +30,8 @@ namespace DataslateAPI.Controllers
             var readUserDTOs = users.Select(u => new ReadUserDTO
             {
                 Id = u.Id,
-                Username = u.username,
-                Email = u.email
+                username = u.username,
+                email = u.email
             }).ToList();
 
             return Ok(readUserDTOs);
@@ -89,8 +89,8 @@ namespace DataslateAPI.Controllers
             var readUserDTO = new ReadUserDTO
             {
                 Id = newUser.Id,
-                Username = newUser.username,
-                Email = newUser.email
+                username = newUser.username,
+                email = newUser.email
             };
 
             // Return the created user with a 201 status code
@@ -98,18 +98,18 @@ namespace DataslateAPI.Controllers
         }
 
         // PUT: api/users/{id}
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult> UpdateUser(int id, UpdateUserDTO user)
         {
             var existingUser = await _context.Users.FindAsync(id);
             if (existingUser == null)
                 return NotFound("User not found in the database");
 
-            existingUser.email = user.Email;
-            if (!string.IsNullOrEmpty(user.NewPassword))
+            existingUser.email = user.email;
+            if (!string.IsNullOrEmpty(user.password))
             {
                 // Hash the new password before updating
-                existingUser.passwordHash = BCrypt.Net.BCrypt.HashPassword(user.NewPassword);
+                existingUser.passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password);
             }
 
             try
@@ -127,7 +127,7 @@ namespace DataslateAPI.Controllers
                     throw;
             }
 
-            // Return NoContent to indicate successful update
+            // Return 204 No Content on successful update
             return NoContent();
 
         }

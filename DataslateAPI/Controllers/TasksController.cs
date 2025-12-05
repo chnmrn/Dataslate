@@ -2,12 +2,14 @@
 using DataslateAPI.DTOs.Projects;
 using DataslateAPI.DTOs.Tasks;
 using DataslateAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataslateAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TasksController : ControllerBase
@@ -22,7 +24,9 @@ namespace DataslateAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadTaskDTO>>> GetTasks()
         {
-            var tasks = await _context.TaskItems.ToListAsync();
+            var tasks = await _context.TaskItems
+                .Include(t => t.Project)
+                .ToListAsync();
 
             var readTaskDTOs = tasks.Select(t => new ReadTaskDTO
             {
@@ -41,6 +45,7 @@ namespace DataslateAPI.Controllers
         {
             // LINQ shows a specific task by id
             var task = await _context.TaskItems
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (task == null)
@@ -87,7 +92,7 @@ namespace DataslateAPI.Controllers
         }
 
         // PUT: api/tasks/{id}
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult> UpdateTask(int id, UpdateTaskDTO task)
         {
             //
@@ -99,7 +104,20 @@ namespace DataslateAPI.Controllers
             existingTask.taskTitle = task.taskTitle;
             existingTask.status = task.status;
 
-            await _context.SaveChangesAsync();
+            try {
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Check if the task still exists
+                if (!_context.TaskItems.Any(e => e.Id == id))
+                    return NotFound("Task not found in the database");
+                else
+                    throw;
+            }
+
+            // Return 204 No Content on successful update
             return NoContent();
 
 

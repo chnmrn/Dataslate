@@ -1,0 +1,10 @@
+﻿namespace DataslateAPI.DTOs.Authentication
+{
+    public class TokenDTO
+    {
+        public string token { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
+        public DateTime Expiration { get; set; } 
+    }
+}
