@@ -9,9 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataslateAPI.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TasksController : ControllerBase
     {
         private readonly DataslateDbContext _context;

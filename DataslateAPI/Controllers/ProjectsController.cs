@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataslateAPI.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
         private readonly DataslateDbContext _context;
