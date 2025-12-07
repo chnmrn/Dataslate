@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net.Http.Headers;
 using System.Text;
 
 
@@ -63,6 +64,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddHttpClient("GitHub", client =>
+{
+    // Set the base address and user agent for GitHub API requests
+    client.BaseAddress = new Uri("https://api.github.com/");
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("DataslateAPI");
+
+    // Add the authorization header with the GitHub token
+    client.DefaultRequestHeaders.Authorization =
+    new AuthenticationHeaderValue("Bearer", builder.Configuration["GitHub:Token"]);
+
+});
 
 
 var app = builder.Build();

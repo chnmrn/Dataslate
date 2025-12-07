@@ -8,5 +8,7 @@
 
         public int projectId { get; set; }
         public Project Project { get; set; }
+        public int? GitHubIssueId { get; set; }
+
     }
 }
