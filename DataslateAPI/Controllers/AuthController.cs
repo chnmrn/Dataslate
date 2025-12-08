@@ -39,8 +39,9 @@ namespace DataslateAPI.Controllers
             _context.Users.Add(signUp);
             await _context.SaveChangesAsync();
 
-            // Return the created user with a 201 status code
-            return Ok("User registered successfully");
+            // Return a success response
+            return Ok(new { message = "User registered successfully" });
+
         }
 
         // POST: api/auth/login
@@ -75,13 +76,8 @@ namespace DataslateAPI.Controllers
             );
 
             // Return the token
-            return Ok(new TokenDTO
-            {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                username = user.username,
-                email = user.email,
-                Expiration = token.ValidTo
-            });
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+
         }
 
     }

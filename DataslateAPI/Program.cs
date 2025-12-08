@@ -76,8 +76,17 @@ builder.Services.AddHttpClient("GitHub", client =>
 
 });
 
+// Configure CORS to allow requests from the frontend application
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy.WithOrigins("http://localhost:3000") // Adjust the URL to match the frontend's address
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+});
 
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
