@@ -1,4 +1,4 @@
-const API_URL = "https://localhost:7128/api"; // ajusta según tu backend
+const API_URL = "http://localhost:5027/api"; // adjust as needed
 
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_URL}/Auth/login`, {
@@ -14,13 +14,13 @@ export async function register(email: string, password: string, userName: string
   const res = await fetch(`${API_URL}/Auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, username: userName }), // ojo: backend espera "username"
+    body: JSON.stringify({ email, password, username: userName }), // backend expects a "username"
   });
 
   const contentType = res.headers.get("content-type");
 
   if (!res.ok) {
-    // si es JSON, parsea; si no, devuelve texto
+    // If it is JSON, parse; if not, get text
     if (contentType?.includes("application/json")) {
       const errorJson = await res.json();
       throw new Error(errorJson.message || "Register failed");
@@ -30,7 +30,7 @@ export async function register(email: string, password: string, userName: string
     }
   }
 
-  // si todo salió bien
+  // if successful, parse response accordingly
   if (contentType?.includes("application/json")) {
     return res.json();
   } else {
@@ -39,7 +39,7 @@ export async function register(email: string, password: string, userName: string
 }
 
 
-
+// Fetch projects using the provided token
 export async function getProjects(token: string) {
   const res = await fetch(`${API_URL}/Projects`, {
     headers: {
