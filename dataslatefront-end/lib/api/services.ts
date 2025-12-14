@@ -51,4 +51,17 @@ export async function getProjects(token: string) {
   return res.json();
 }
 
+export async function getTasks(token: string) {
+  const res = await fetch(`${API_URL}/Tasks`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Error fetching tasks");
+  return res.json();
+}
+
+
 

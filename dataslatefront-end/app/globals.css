@@ -25,11 +25,11 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, span {
   font-family: var(--font-anta), sans-serif;
 }
 
-p, input, Button {
+p, input, Button, Link, a {
   font-family: var(--font-ibm-plex-mono), monospace;
 }
 

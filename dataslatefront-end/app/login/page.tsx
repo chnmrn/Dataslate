@@ -14,6 +14,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleLogin = async () => {
     try {
@@ -23,8 +25,7 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       router.push("/dashboard");
     } catch (err) {
-      console.error("Login failed", err);
-      alert("Email or password incorrect");
+      setErrorMessage("Email or password incorrect");
     } finally {
       setLoading(false);
     }
@@ -66,6 +67,13 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
+          {errorMessage && (
+            <p className="text-red-400 text-sm text-center bg-red-400/10 border border-red-400/20 py-2 rounded-lg">
+              {errorMessage}
+            </p>
+          )}
+
 
           <Button className="px-4 py-2 rounded-lg font-medium bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30 transition-all active:scale-[0.97]"
                   onClick={handleLogin} disabled={loading}>
