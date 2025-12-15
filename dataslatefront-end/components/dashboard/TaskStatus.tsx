@@ -14,7 +14,7 @@ export default function TaskStatus({ tasks }: { tasks: any[] }) {
     datasets: [
       {
         data: [completed, pending],
-        backgroundColor: ["#4ade80", "#f87171"], // green, red
+        backgroundColor: ["#4ade80", "#f87171"], 
         borderColor: ["#22c55e", "#ef4444"],
         borderWidth: 2,
       },
@@ -42,8 +42,8 @@ export default function TaskStatus({ tasks }: { tasks: any[] }) {
       </div>
 
       <div className="flex justify-center gap-6 mt-4 text-gray-300 text-sm">
-        <p>✅ Completed: {completed}</p>
-        <p>🕒 Pending: {pending}</p>
+        <p>Completed: {completed}</p>
+        <p>Pending: {pending}</p>
       </div>
     </div>
   );

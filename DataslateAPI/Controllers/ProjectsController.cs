@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace DataslateAPI.Controllers
 {
@@ -26,10 +27,12 @@ namespace DataslateAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadProjectDTO>>> GetProjects()
         {
-            // Fetch all projects and users from the database
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             var projects = await _context.Projects
-                .Include(u => u.Tasks)
-                .Include(u => u.User)
+                .Where(p => p.userId == userId)
+                .Include(p => p.Tasks)
+                .Include(p => p.User)
                 .ToListAsync();
 
             var readProjectDTOs = projects.Select(p => new ReadProjectDTO
@@ -38,11 +41,13 @@ namespace DataslateAPI.Controllers
                 projectName = p.projectName,
                 description = p.description,
                 GitRepository = p.GitRepository,
-                userName = p.User != null ? p.User.username : null
+                userName = p.User?.username
             }).ToList();
 
             return Ok(readProjectDTOs);
         }
+
+
 
         // GET: api/projects/{id}
         [HttpGet("{id}")]
@@ -79,34 +84,37 @@ namespace DataslateAPI.Controllers
 
         // POST: api/projects
         [HttpPost]
-        public async Task<ActionResult<ReadProjectDTO>> CreateProject(CreateProjectDTO project)
-        {
-            var newProject = new Project
-            {
-                projectName = project.projectName,
-                description = project.description,
-                GitRepository = project.GitRepository,
-                userId = project.userId
-            };
+public async Task<ActionResult<ReadProjectDTO>> CreateProject(CreateProjectDTO project)
+{
+    // Get userId from JWT token claims
+    var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            _context.Projects.Add(newProject);
-            await _context.SaveChangesAsync();
+    var newProject = new Project
+    {
+        projectName = project.projectName,
+        description = project.description,
+        GitRepository = project.GitRepository,
+        userId = userId   
+    };
 
-            // Cargar la relación con User para devolver el nombre
-            await _context.Entry(newProject).Reference(p => p.User).LoadAsync();
+    _context.Projects.Add(newProject);
+    await _context.SaveChangesAsync();
 
-            var readProjectDTO = new ReadProjectDTO
-            {
-                Id = newProject.Id,
-                projectName = newProject.projectName,
-                description = newProject.description,
-                GitRepository = newProject.GitRepository,
-                userName = newProject.User?.username
-            };
+    await _context.Entry(newProject).Reference(p => p.User).LoadAsync();
 
-            return CreatedAtAction(nameof(GetProject), new { id = newProject.Id }, readProjectDTO);
+    var readProjectDTO = new ReadProjectDTO
+    {
+        Id = newProject.Id,
+        projectName = newProject.projectName,
+        description = newProject.description,
+        GitRepository = newProject.GitRepository,
+        userName = newProject.User?.username
+    };
 
-        }
+    return CreatedAtAction(nameof(GetProject), new { id = newProject.Id }, readProjectDTO);
+}
+
+
 
 
         // PUT: api/projects/{id}

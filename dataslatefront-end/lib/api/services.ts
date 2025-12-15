@@ -51,6 +51,7 @@ export async function getProjects(token: string) {
   return res.json();
 }
 
+// Fetch tasks using the provided token
 export async function getTasks(token: string) {
   const res = await fetch(`${API_URL}/Tasks`, {
     headers: {
@@ -62,6 +63,45 @@ export async function getTasks(token: string) {
   if (!res.ok) throw new Error("Error fetching tasks");
   return res.json();
 }
+
+// Create a new project
+export async function createProject(project: any, token: string) {
+  const res = await fetch(`${API_URL}/Projects`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(project),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(error || "Error creating project");
+  }
+
+  return res.json();
+}
+
+// Create a new task
+export async function createTask(task: any, token: string) {
+  const res = await fetch(`${API_URL}/Tasks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(task),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(error || "Error creating task");
+  }
+
+  return res.json();
+}
+
 
 
 
