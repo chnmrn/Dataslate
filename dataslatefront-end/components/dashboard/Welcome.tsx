@@ -35,14 +35,14 @@ export default function Welcome({
 
       <div className="flex gap-4">
         <button
-          className="px-6 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
+          className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
           onClick={() => setOpenProject(true)}
         >
           New Project
         </button>
 
          <button
-          className="px-6 py-3 bg-cyan-600 rounded-lg hover:bg-cyan-700 transition"
+          className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
           onClick={() => setOpenTask(true)}
         >
           New Task

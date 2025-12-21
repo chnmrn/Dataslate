@@ -64,7 +64,7 @@ export async function getTasks(token: string) {
   return res.json();
 }
 
-// Create a new project
+// Create a new Project
 export async function createProject(project: any, token: string) {
   const res = await fetch(`${API_URL}/Projects`, {
     method: "POST",
@@ -83,7 +83,7 @@ export async function createProject(project: any, token: string) {
   return res.json();
 }
 
-// Create a new task
+// Create a new Task
 export async function createTask(task: any, token: string) {
   const res = await fetch(`${API_URL}/Tasks`, {
     method: "POST",
@@ -101,6 +101,59 @@ export async function createTask(task: any, token: string) {
 
   return res.json();
 }
+
+// Update a Project
+export async function updateProject(id: number, project: any, token: string) {
+  return fetch(`${API_URL}/Projects/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(project),
+  });
+}
+
+// Update a Task
+export async function updateTask(id: number, task: any, token: string) {
+  const res = await fetch(`${API_URL}/Tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(task),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(error || "Error updating task");
+  }
+}
+
+// Delete a project
+export async function deleteProject(id: number, token: string) {
+  return fetch(`${API_URL}/Projects/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+// Delete a Task
+export async function deleteTask(id: number, token: string) {
+  const res = await fetch(`${API_URL}/Tasks/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+
+
+
 
 
 

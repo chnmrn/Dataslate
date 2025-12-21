@@ -1,7 +1,4 @@
-export default function Metrics({
-  projects,
-  tasks,
-}: {
+export default function Metrics({ projects, tasks, }: {
   projects: any[];
   tasks: any[];
 }) {

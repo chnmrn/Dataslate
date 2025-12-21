@@ -4,7 +4,8 @@ export default function Projects({ projects }: { projects: any[] }) {
       <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-xl font-semibold">Your Projects</h3>
-          <button className="text-sm text-indigo-400 hover:text-indigo-300">
+          <button className="px-6 py-3 bg-gray-800 border border-white/20 rounded-lg hover:bg-white/20 transition"
+          onClick={() => window.location.href = "/github/projects"}>
             View All
           </button>
         </div>

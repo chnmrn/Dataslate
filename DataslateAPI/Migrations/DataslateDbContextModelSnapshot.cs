@@ -136,7 +136,6 @@ namespace DataslateAPI.Migrations
                 {
                     b.Navigation("Projects");
                 });
-#pragma warning restore 612, 618
         }
     }
 }

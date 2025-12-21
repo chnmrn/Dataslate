@@ -23,13 +23,16 @@ export default function Repositories({ repo }: Repositories) {
       </div>
 
       {/* Link */}
-      <a
-        href={repo.html_url}
-        target="_blank"
-        className="text-indigo-400 text-sm hover:underline mt-3 inline-block"
-      >
-        View on GitHub →
-      </a>
+      <div className="mt-4">
+        <a
+          href={repo.html_url}
+          target="_blank"
+          className="px-6 py-3 bg-gray-800 border border-white/20 rounded-lg hover:bg-white/20 transition"
+        >
+          View on GitHub
+        </a>
+      </div>
+
     </div>
   );
 }

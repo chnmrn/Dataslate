@@ -54,7 +54,7 @@ export default function NewTask({
           value={projectId}
           onChange={(e) => setProjectId(e.target.value)}
         >
-          <option value="">Select a project</option>
+          <option value="" className="text-black">Select a project</option>
           {projects.map((p) => (
             <option key={p.id} value={p.id} className="text-black">
               {p.projectName}

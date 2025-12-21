@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { getProjects } from "@/lib/api/services";
-import { jwtDecode } from "jwt-decode";
+import ProjectsSection from "@/components/projects/ViewProject";
+import TasksSection from "@/components/tasks/ViewTasks";
 
 interface Project {
   id: number;
@@ -17,6 +18,7 @@ export default function AllProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -37,7 +39,6 @@ export default function AllProjectsPage() {
       <Navbar />
 
       <main className="pt-28 px-12 bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white">
-
         <h1 className="text-4xl font-semibold mb-8">All Projects</h1>
 
         {/* Loading */}
@@ -61,33 +62,27 @@ export default function AllProjectsPage() {
           </div>
         )}
 
-        {/* Projects Grid */}
+        {/* Sections */}
         {!loading && !error && projects.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 hover:bg-white/20 transition"
-              >
-                <h2 className="text-xl font-semibold mb-2">
-                  {project.projectName}
-                </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Left Side: Projects */}
+            <ProjectsSection
+              projects={projects}
+              setProjects={setProjects}
+              selectedProject={selectedProject}
+              setSelectedProject={setSelectedProject}
+            />
 
-                <p className="text-gray-400 text-sm mb-4">
-                  {project.description || "No description provided."}
-                </p>
-
-                {project.gitRepository && (
-                  <a
-                    href={project.gitRepository}
-                    target="_blank"
-                    className="text-indigo-400 text-sm hover:underline"
-                  >
-                    View Repository →
-                  </a>
-                )}
-              </div>
-            ))}
+            {/* Right Side: Tasks */}
+            <div>
+              {!selectedProject ? (
+                <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 text-gray-400">
+                  Select a project to view its tasks.
+                </div>
+              ) : (
+                <TasksSection project={selectedProject} />
+              )}
+            </div>
           </div>
         )}
       </main>
@@ -96,4 +91,3 @@ export default function AllProjectsPage() {
     </>
   );
 }
-

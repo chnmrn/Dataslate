@@ -69,11 +69,8 @@ export default function Navbar() {
           <Link href="/dashboard" className="hover:text-white transition">
             Dashboard
           </Link>
-          <Link href="/projects" className="hover:text-white transition">
+          <Link href="/github/projects" className="hover:text-white transition">
             Projects
-          </Link>
-          <Link href="/tasks" className="hover:text-white transition">
-            Tasks
           </Link>
         </div>
 
@@ -85,7 +82,7 @@ export default function Navbar() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={searchGitHubUser}
-            className="px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition w-48"
+            className="pl-10 pr-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition w-72"
           />
         </div>
 

@@ -1,4 +1,5 @@
-﻿using DataslateAPI.Data;
+﻿using System.Security.Claims;
+using DataslateAPI.Data;
 using DataslateAPI.DTOs.Projects;
 using DataslateAPI.DTOs.Tasks;
 using DataslateAPI.Models;
@@ -25,8 +26,11 @@ namespace DataslateAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ReadTaskDTO>>> GetTasks()
         {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
             var tasks = await _context.TaskItems
                 .Include(t => t.Project)
+                .Where(t => t.Project.userId == userId)
                 .ToListAsync();
 
             var readTaskDTOs = tasks.Select(t => new ReadTaskDTO
@@ -34,8 +38,10 @@ namespace DataslateAPI.Controllers
                 Id = t.Id,
                 taskTitle = t.taskTitle,
                 status = t.status,
-                projectName = t.Project != null ? t.Project.projectName : null
+                projectId = t.projectId,
+                projectName = t.Project.projectName
             }).ToList();
+
 
             return Ok(readTaskDTOs);
         }
@@ -57,6 +63,7 @@ namespace DataslateAPI.Controllers
                 Id = task.Id,
                 taskTitle = task.taskTitle,
                 status = task.status,
+                projectId = task.projectId,
                 projectName = task.Project != null ? task.Project.projectName : null
             };
 
