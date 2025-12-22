@@ -3,6 +3,10 @@
 import { useState } from "react";
 import NewProject from "@/components/projects/NewProject";
 import NewTask from "@/components/tasks/NewTask";
+import { GoProjectRoadmap } from "react-icons/go";
+import { GoTasklist } from "react-icons/go";
+import { GoListUnordered } from "react-icons/go";
+
 
 interface WelcomeProps {
   username: string;
@@ -35,24 +39,24 @@ export default function Welcome({
 
       <div className="flex gap-4">
         <button
-          className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
           onClick={() => setOpenProject(true)}
         >
-          New Project
+          <GoProjectRoadmap size={30} /> New Project 
         </button>
 
          <button
-          className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
           onClick={() => setOpenTask(true)}
-        >
-          New Task
+        > 
+          <GoTasklist size={30} />New Task
         </button>
 
         <button
-          className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
           onClick={() => window.location.href = "/github/projects"}
         >
-          View All Projects
+         <GoListUnordered  size={30} /> View All Projects
         </button>
 
 

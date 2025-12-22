@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IoLogoGithub } from "react-icons/io5";
+import { GoStarFill } from "react-icons/go";
+import { GoRepoForked } from "react-icons/go";
+import { GoIssueTracks } from "react-icons/go";
 
 interface GitHubPreviewProps {
   repoUrl: string;
@@ -72,22 +76,10 @@ export default function GitHubPreview({ repoUrl, projects, onSelectProject }: Gi
   return (
     <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold">GitHub Activity</h3>
-
-        {/* Projects */}
-        <select
-          className="bg-gray-800 text-white px-3 py-1 rounded-md border border-white/20"
-          onChange={(e) => {
-            const project = projects.find(p => p.id === Number(e.target.value));
-            onSelectProject(project);
-          }}
-        >
-          {projects.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.projectName}
-            </option>
-          ))}
-        </select>
+        <div className="flex justify-between items-center mb-4 gap-4">
+          <h3 className="text-xl font-semibold">GitHub Activity</h3>
+          <IoLogoGithub size={25}/>
+        </div>
       </div>
 
       {/* Error */}
@@ -108,9 +100,18 @@ export default function GitHubPreview({ repoUrl, projects, onSelectProject }: Gi
           </p>
 
           <div className="flex gap-6 text-gray-300 text-sm mb-4">
-            <span> {repoData.stargazers_count} stars</span>
-            <span> {repoData.forks_count} forks</span>
-            <span> {repoData.open_issues_count} issues</span>
+            <div className="flex justify-between items-center mb-4 gap-1">
+              <GoStarFill />
+              <span> {repoData.stargazers_count} stars</span>
+            </div>
+            <div className="flex justify-between items-center mb-4 gap-1">
+              <GoRepoForked />
+              <span> {repoData.forks_count} forks</span>
+            </div>
+            <div className="flex justify-between items-center mb-4 gap-1">
+              <GoIssueTracks />
+              <span> {repoData.open_issues_count} issues</span>
+            </div>
           </div>
 
           <h4 className="font-semibold text-gray-200 mb-2">Latest commits</h4>

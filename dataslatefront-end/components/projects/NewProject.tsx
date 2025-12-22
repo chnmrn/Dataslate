@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,14 @@ export default function NewProjectModal({
     setLoading(false);
     onClose();
   };
+
+  useEffect(() => {
+    if (!open) {
+      setProjectName("");
+      setDescription("");
+      setRepoUrl("");
+    }
+  }, [open]);
 
   return (
     <Modal open={open} onClose={onClose} title="Create New Project">

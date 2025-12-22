@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import Modal from "@/components/ui/Modal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,16 @@ export default function NewTask({
     setLoading(false);
     onClose();
   };
+  
+
+    useEffect(() => {
+      if (!open) {
+        setTaskTitle("");
+        setProjectId("");
+      }
+    }, [open]);
+  
+  
 
   return (
     <Modal open={open} onClose={onClose} title="Create New Task">

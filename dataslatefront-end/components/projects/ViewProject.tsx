@@ -4,6 +4,9 @@ import { useState } from "react";
 import EditProjectModal from "@/components/projects/UpdateProject";
 import DeleteProjectModal from "@/components/projects/DeleteProject";
 import { updateProject, deleteProject, getProjects } from "@/lib/api/services";
+import { GoLink } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 interface Project {
   id: number;
@@ -58,17 +61,20 @@ export default function ProjectsSection({
           </p>
 
           <div className="flex gap-4 text-sm mt-4">
-            {project.gitRepository && (
+              {project.gitRepository && (
               <a
                 href={project.gitRepository}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-3 bg-indigo-600/20 border border-indigo-400 rounded-lg hover:bg-indigo-600/30 transition text-indigo-300 font-medium inline-block"
               >
-                🔗 View Repository
+                <div className="flex items-center gap-3">
+                  <GoLink /> 
+                  View Repository
+                </div> 
               </a>
             )}
-
+            
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -76,7 +82,10 @@ export default function ProjectsSection({
               }}
               className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
             >
-              Edit
+              <div className="flex items-center gap-3">
+                <MdEdit />
+                Edit
+              </div>
             </button>
 
             <button
@@ -86,7 +95,10 @@ export default function ProjectsSection({
               }}
               className="px-6 py-3 bg-red-600/20 border border-red-600/40 rounded-lg hover:bg-red-600/30 transition text-red-400 hover:text-red-300"
             >
-              Delete
+              <div className="flex items-center gap-3">
+                <MdDelete />
+                Delete
+              </div>   
             </button>
           </div>
         </div>

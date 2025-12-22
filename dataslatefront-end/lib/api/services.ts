@@ -1,5 +1,6 @@
-const API_URL = "http://localhost:5027/api"; // adjust as needed
+const API_URL = "http://localhost:5027/api"; // Current Localhost
 
+// Login Dataslate
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_URL}/Auth/login`, {
     method: "POST",
@@ -10,11 +11,12 @@ export async function login(email: string, password: string) {
   return res.json();
 }
 
+// Register Dataslate
 export async function register(email: string, password: string, userName: string) {
   const res = await fetch(`${API_URL}/Auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password, username: userName }), // backend expects a "username"
+    body: JSON.stringify({ email, password, username: userName }), 
   });
 
   const contentType = res.headers.get("content-type");

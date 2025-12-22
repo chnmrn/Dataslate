@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { getTasks } from "@/lib/api/services";
 import EditTaskModal from "@/components/tasks/UpdateTask";
 import DeleteTaskModal from "@/components/tasks/DeleteTask";
+import { GoCheckCircleFill } from "react-icons/go";
+import { GoXCircleFill } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 
 interface Task {
   id: number;
@@ -57,8 +61,19 @@ export default function TasksSection({ project }: { project: any }) {
             >
               <div>
                 <h4 className="font-semibold">{task.taskTitle}</h4>
-                <p className="text-gray-400 text-sm">
-                  Status: {task.status ? "✅ Done" : "⏳ Pending"}
+                <p className="text-gray-400 text-sm flex items-center gap-2">
+                  Status:{" "}
+                  {task.status ? (
+                    <>
+                      <GoCheckCircleFill className="text-green-400" size={18} />
+                      <span className="text-green-400">Completed</span>
+                    </>
+                  ) : (
+                    <>
+                      <GoXCircleFill className="text-red-400" size={18} />
+                      <span className="text-red-400">Pending</span>
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -67,13 +82,19 @@ export default function TasksSection({ project }: { project: any }) {
                   onClick={() => setEditingTask(task)}
                   className="px-6 py-3 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition"
                 >
-                  Edit
+                  <div className="flex items-center gap-3">
+                      <MdEdit />
+                      Edit
+                  </div>
                 </button>
                 <button
                   onClick={() => setDeletingTask(task)}
                   className="px-4 py-2 bg-red-600/20 border border-red-600/40 rounded-lg hover:bg-red-600/30 transition text-red-400 text-sm"
                 >
-                  Delete
+                  <div className="flex items-center gap-3">
+                    <MdDelete />
+                    Delete
+                  </div>   
                 </button>
               </div>
             </li>

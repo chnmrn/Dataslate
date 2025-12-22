@@ -39,7 +39,7 @@ export default function AllProjectsPage() {
       <Navbar />
 
       <main className="pt-28 px-12 bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen text-white">
-        <h1 className="text-4xl font-semibold mb-8">All Projects</h1>
+        <h1 className="text-4xl font-semibold mb-8">Your Projects</h1>
 
         {/* Loading */}
         {loading && (

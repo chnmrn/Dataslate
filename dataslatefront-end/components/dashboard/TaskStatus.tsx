@@ -2,6 +2,8 @@
 
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { GoCheckCircleFill } from "react-icons/go";
+import { GoXCircleFill } from "react-icons/go";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -41,9 +43,15 @@ export default function TaskStatus({ tasks }: { tasks: any[] }) {
         <Doughnut data={data} options={options} />
       </div>
 
-      <div className="flex justify-center gap-6 mt-4 text-gray-300 text-sm">
-        <p>Completed: {completed}</p>
-        <p>Pending: {pending}</p>
+      <div className="flex justify-center gap-6 mt-4 text-gray-300 text-s">
+        <div className="flex justify-center gap-2">
+          <GoCheckCircleFill className="mt-1.5 text-green-400" size={15}/>
+        <p> Completed: {completed}</p>
+        </div>
+        <div className="flex justify-center gap-2">
+          <GoXCircleFill className="mt-1.5 text-red-400" size={15}/>
+          <p>Pending: {pending}</p>
+        </div>       
       </div>
     </div>
   );

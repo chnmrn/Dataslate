@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
+
 
 namespace DataslateAPI.Controllers
 {
@@ -34,7 +36,27 @@ namespace DataslateAPI.Controllers
                 passwordHash = BCrypt.Net.BCrypt.HashPassword(register.password) // Hash the password when creating the user
             };
 
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.email == register.email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "Email already exists" });
+            }
 
+            if (!register.email.Contains("@"))
+                return BadRequest(new { message = "Email must contain '@'." });
+
+            if (string.IsNullOrWhiteSpace(register.username))
+                return BadRequest(new { message = "Username is required" });
+
+            if (string.IsNullOrWhiteSpace(register.email))
+                return BadRequest(new { message = "Email is required" });
+
+            if (string.IsNullOrWhiteSpace(register.password))
+                return BadRequest(new { message = "Password is required" });
+
+            if (register.password.Length < 8)
+                return BadRequest(new { message = "Password must be at least 8 characters." });
+                
             // Add the new user to the database
             _context.Users.Add(signUp);
             await _context.SaveChangesAsync();
@@ -79,6 +101,8 @@ namespace DataslateAPI.Controllers
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
 
         }
+
+        
 
     }
 }

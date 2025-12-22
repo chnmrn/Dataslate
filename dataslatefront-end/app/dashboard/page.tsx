@@ -100,18 +100,14 @@ export default function Dashboard() {
           <TaskStatus tasks={tasks} />
 
           <div className="md:col-span-2">
-            <Projects projects={projects} />
+            <Projects projects={projects} onSelectProject={setSelectedProject} />
           </div>
-
+          
         </section>
 
        {/* Dashboard part 2 */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {!selectedProject ? (
-            <div className="md:col-span-3 text-gray-400 text-sm">
-              <p>Loading GitHub components...</p>
-            </div>
-          ) : (
+          {selectedProject?.gitRepository ? (
             <>
               <div className="md:col-span-2">
                 <GitHubPreview
@@ -120,11 +116,14 @@ export default function Dashboard() {
                   onSelectProject={setSelectedProject}
                 />
               </div>
-
               <div>
                 <Collaborators repoUrl={selectedProject.gitRepository} />
               </div>
             </>
+          ) : (
+            <div className="md:col-span-3 text-gray-400 text-sm">
+              <p>No GitHub repository linked for this project.</p>
+            </div>
           )}
         </section>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FaUsers } from "react-icons/fa";
 
 interface CollaboratorsProps {
   repoUrl: string;
@@ -100,8 +101,11 @@ export default function Collaborators({ repoUrl }: CollaboratorsProps) {
   // Final UI
   return (
     <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
-      <h3 className="text-xl font-semibold mb-4">Collaborators</h3>
-
+      <div className="flex gap-3 text-gray-300 text-sm mb-4">
+        <h3 className="text-xl font-semibold mb-4">Collaborators</h3>
+        <FaUsers className="mt-1" size={20} />
+      </div>
+      
       <ul className="space-y-3">
         {collaborators.map((col: any, index: number) => (
           <li key={index} className="flex items-center gap-3">

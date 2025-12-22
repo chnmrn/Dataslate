@@ -1,5 +1,9 @@
 "use client";
 
+import { HiMiniUsers } from "react-icons/hi2";
+import { GoRepo } from "react-icons/go";
+import { GoLocation } from "react-icons/go";
+
 interface GitHubUserHeaderProps {
   user: any;
 }
@@ -29,9 +33,20 @@ export default function ProfileInfo({ user }: GitHubUserHeaderProps) {
 
         {/* Stats */}
         <div className="flex gap-6 mt-4 text-gray-300 text-sm">
-          <span>👥 Followers: {user.followers}</span>
-          <span>⭐ Public Repos: {user.public_repos}</span>
-          {user.location && <span>📍 {user.location}</span>}
+          <div className="flex items-center gap-2">
+            <HiMiniUsers />
+            <span> Followers: {user.followers}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <GoRepo />
+            <span> Public Repos: {user.public_repos}</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <GoLocation />
+            {user.location && <span> {user.location}</span>}
+          </div>
         </div>
       </div>
     </section>

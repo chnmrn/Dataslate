@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 interface EditProjectModalProps {
   open: boolean;
   onClose: () => void;
-  project: any; 
+  project: any;
   onUpdate: (project: any) => void;
 }
 
@@ -58,13 +58,13 @@ export default function EditProjectModal({
         />
 
         <Input
-          placeholder="Description"
+          placeholder="Description (optional)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <Input
-          placeholder="GitHub Repository URL"
+          placeholder="GitHub Repository URL (optional)"
           value={repoUrl}
           onChange={(e) => setRepoUrl(e.target.value)}
         />
@@ -72,7 +72,7 @@ export default function EditProjectModal({
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-indigo-600 text-white border border-indigo-400 hover:bg-indigo-500"
+          className="bg-white/20 text-white border border-white/30 hover:bg-white/30"
         >
           {loading ? "Updating..." : "Save Changes"}
         </Button>

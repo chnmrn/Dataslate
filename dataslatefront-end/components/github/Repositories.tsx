@@ -1,5 +1,10 @@
 "use client";
 
+import { GoStarFill } from "react-icons/go";
+import { GoRepoForked } from "react-icons/go";
+import { FaLaptop } from "react-icons/fa";
+import { GoLink } from "react-icons/go";
+
 interface Repositories {
   repo: any;
 }
@@ -17,19 +22,31 @@ export default function Repositories({ repo }: Repositories) {
 
       {/* Stats */}
       <div className="flex gap-4 text-gray-300 text-sm mt-3">
-        <span>⭐ {repo.stargazers_count}</span>
-        <span>🍴 {repo.forks_count}</span>
-        {repo.language && <span>💻 {repo.language}</span>}
+        <div className="flex justify-between items-center mb-4 gap-1">
+              <GoStarFill />
+              <span> {repo.stargazers_count} stars</span>
+        </div>
+        <div className="flex justify-between items-center mb-4 gap-1">
+              <GoRepoForked />
+              <span> {repo.forks_count}</span>
+        </div>
+        <div className="flex justify-between items-center mb-4 gap-1">
+          <FaLaptop />
+          {repo.language && <span> {repo.language}</span>}  
+        </div>
       </div>
 
       {/* Link */}
-      <div className="mt-4">
+      <div className="flex gap-4 text-sm mt-4">
         <a
           href={repo.html_url}
           target="_blank"
-          className="px-6 py-3 bg-gray-800 border border-white/20 rounded-lg hover:bg-white/20 transition"
+          className="px-6 py-3 bg-indigo-600/20 border border-indigo-400 rounded-lg hover:bg-indigo-600/30 transition text-indigo-300 font-medium inline-block"
         >
-          View on GitHub
+         <div className="flex items-center gap-3">
+            <GoLink /> 
+            View Repository
+         </div> 
         </a>
       </div>
 

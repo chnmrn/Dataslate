@@ -30,7 +30,7 @@ export default function EditTaskModal({
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // sync when task changes
+  // sincronizar cuando cambia la task
   useEffect(() => {
     if (task) {
       setTitle(task.taskTitle || "");
@@ -72,7 +72,7 @@ export default function EditTaskModal({
         <Button
           onClick={handleSubmit}
           disabled={loading}
-          className="bg-indigo-600 text-white border border-indigo-400 hover:bg-indigo-500"
+          className="bg-white/20 text-white border border-white/30 hover:bg-white/30"
         >
           {loading ? "Updating..." : "Save Changes"}
         </Button>

@@ -5,12 +5,17 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { MdLogout } from "react-icons/md";
+import { GoSearch } from "react-icons/go";
 
 export default function Navbar() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -36,11 +41,12 @@ export default function Navbar() {
     if (!search.trim()) return;
 
     setLoading(true);
+    setErrorMessage("");
 
     try {
       const res = await fetch(`https://api.github.com/users/${search}`);
       if (res.status === 404) {
-        alert("User not found");
+        setErrorMessage("User not found");
         setLoading(false);
         return;
       }
@@ -60,7 +66,7 @@ export default function Navbar() {
 
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <Image src="/Dataslate.png" alt="Logo" width={40} height={40} />
+          <Image src="/Dataslate.png" alt="Logo" width={60} height={60} />
           <span className="text-xl font-semibold text-white">Dataslate</span>
         </div>
 
@@ -75,25 +81,45 @@ export default function Navbar() {
         </div>
 
         {/* Search Bar */}
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Search GitHub user..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={searchGitHubUser}
-            className="pl-10 pr-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition w-72"
-          />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/10 border border-white/20 w-72">
+            <GoSearch className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search GitHub user"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={searchGitHubUser}
+              className="flex-1 bg-transparent text-white placeholder-gray-300 focus:outline-none text-left"
+            />
+          </div>
+
+          {/* Error Message */}
+          {errorMessage && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 
+                          bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg 
+                          animate-slideDown z-50 flex items-center justify-between gap-4">
+            <span>{errorMessage}</span>
+            <button
+              onClick={() => setErrorMessage("")}
+              className="text-white hover:text-gray-200 font-bold"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         </div>
+
+
 
         {/* User and Logout */}
         <div className="flex items-center gap-4">
           <span className="text-gray-200">Hi, {username}</span>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-white/20 text-white rounded-lg border border-white/30 hover:bg-white/30 transition"
+            className="flex gap-3 px-4 py-2 bg-white/20 text-white rounded-lg border border-white/30 hover:bg-white/30 transition"
           >
-            Logout
+            <MdLogout className="mt-0.5" size={20}/> Logout
           </button>
         </div>
       </div>

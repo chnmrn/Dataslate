@@ -2,6 +2,7 @@
 
 import Modal from "@/components/ui/Modal";
 import { Button } from "@/components/ui/button";
+import { MdDelete } from "react-icons/md";
 
 interface DeleteProjectModalProps {
   open: boolean;
@@ -33,7 +34,10 @@ export default function DeleteProjectModal({
           onClick={handleDelete}
           className="bg-red-600 text-white border border-red-400 hover:bg-red-500"
         >
-          Delete
+          <div className="flex items-center gap-3">
+            <MdDelete />
+            Delete
+          </div>
         </Button>
         <Button
           onClick={onClose}
