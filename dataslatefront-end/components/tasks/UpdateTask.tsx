@@ -30,7 +30,7 @@ export default function EditTaskModal({
   const [status, setStatus] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // sincronizar cuando cambia la task
+  // sync when task changes
   useEffect(() => {
     if (task) {
       setTitle(task.taskTitle || "");
