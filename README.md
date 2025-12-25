@@ -6,11 +6,16 @@ It was programmed to work as a task manager to take notes or reminders of task y
 
 ## Installation
 ### 1. Clone the repository
+
+While I was checking configurations of the GitHub API, I realized **if the project is public, it will only show the commits**, that's why I **Highly recommend**
+you to follow the next steps:
 ```bash
 git clone https://github.com/yourusername/dataslate.git
 cd dataslate
+git remote set-url origin https://github.com/tuusuario/tu-repo-privado.git
+git push -u origin main
 ```
-
+After cloning your repo, make it private so you besides checking the commits you can also see the collaborators form a project
 
 ### 2. Backend configuration (ASP.NET Core)
 For this project you will need to provide tokens (JWT & GitHub).
@@ -19,8 +24,8 @@ They are provided to the backend, check the configuration.
 Required variables:
 
 ```C#
-GITHUB_TOKEN: yourGitHubToken  
-JWT_KEY: yourJWTToken
+GITHUB_TOKEN=yourGitHubToken
+JWT_KEY=yourJWTToken
 ```
 These variables are consumed exclusively by the ASP.NET Core API.
 
@@ -67,3 +72,7 @@ The frontend communicates with the backend API and does not handle any sensitive
 ***Backend:*** ASP.NET Core, Entity Framework Core.  
 ***Database:*** SQL Server / MySQL.  
 ***Authentication:*** JWT, BCrypt, Integrations, GitHub REST API
+
+## License
+MIT License © 2025 Juan
+
