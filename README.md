@@ -14,7 +14,7 @@ cd dataslate
 ### 2. Backend configuration (ASP.NET Core)
 For this project you will need to provide tokens (JWT & GitHub).
 
-They are provided to the backend via environment variables.
+They are provided to the backend, check the configuration.
 Required variables:
 
 ```C#
@@ -24,8 +24,16 @@ JWT_KEY: yourJWTToken
 These variables are consumed exclusively by the ASP.NET Core API.
 
 ### 3. Run the projects
-Back End **(ASP.NET Core)**:`dotnet run`.  
-Front End **(Next.js)**: `npm install` then `npm run dev` (in case of errors try this: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`).
+Back End **(ASP.NET Core)**:
+```bash 
+dotnet run
+```  
+Front End **(Next.js)**: 
+```bash 
+npm install
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser --(optional)
+npm run dev
+```
   
 The frontend communicates with the backend API and does not handle any sensitive credentials.
 
