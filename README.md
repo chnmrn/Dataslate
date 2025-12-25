@@ -1,7 +1,8 @@
 # Dataslate
 
 Dataslate is a small dashboard that integrates projects, tasks, and GitHub repositories into a single interface.
-It allows users to manage projects and tasks, visualize metrics, check latest commits, and inspect repository collaborators.
+It allows users to manage projects and tasks, visualize metrics, check latest commits, and inspect repository collaborators.  
+It was programmed to work as a task manager to take notes or reminders of task you have to do on your projects, without making actual changes on them in github to avoid confusions.
 
 ## Installation
 ### 1. Clone the repository
@@ -23,6 +24,9 @@ JWT_KEY: yourJWTToken
 ```
 These variables are consumed exclusively by the ASP.NET Core API.
 
+For the GitHub Token, be sure to select the options: `repo`, `read:user` and `read:org`  
+Try to avoid using `write:repo` or `delete;repo` because it could actually make changes your repositories
+
 ### 3. Run the projects
 Back End **(ASP.NET Core)**:
 ```bash 
@@ -31,7 +35,7 @@ dotnet run
 Front End **(Next.js)**: 
 ```bash 
 npm install
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser --(optional)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser #(For powershell)
 npm run dev
 ```
   
