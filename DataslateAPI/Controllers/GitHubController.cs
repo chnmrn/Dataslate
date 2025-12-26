@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataslateAPI.Controllers
@@ -43,5 +43,16 @@ namespace DataslateAPI.Controllers
             return Ok(issues);
         }
 
+        [HttpGet("collaborators/{owner}/{repo}")]
+        public async Task<IActionResult> GetCollaborators(string owner, string repo)
+        {
+            var client = _httpClientFactory.CreateClient("GitHub");
+            var response = await client.GetAsync($"/repos/{owner}/{repo}/collaborators");
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode, await response.Content.ReadAsStringAsync());
+
+            var data = await response.Content.ReadFromJsonAsync<List<object>>();
+            return Ok(data);
+        }
     }
 }

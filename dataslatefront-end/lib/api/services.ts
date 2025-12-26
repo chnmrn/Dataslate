@@ -153,10 +153,26 @@ export async function deleteTask(id: number, token: string) {
   });
 }
 
+// Fetch collaborators for a GitHub repo via backend
+export async function getCollaborators(owner: string, repo: string) {
+  const res = await fetch(`${API_URL}/GitHub/collaborators/${owner}/${repo}`);
+  if (!res.ok) throw new Error("Error fetching collaborators");
+  return res.json();
+}
 
+// Fetch issues via backend
+export async function getGitHubIssues(owner: string, repo: string) {
+  const res = await fetch(`${API_URL}/GitHub/issues/${owner}/${repo}`);
+  if (!res.ok) throw new Error("Error fetching issues");
+  return res.json();
+}
 
-
-
+// Fetch commits via backend
+export async function getGitHubCommits(owner: string, repo: string) {
+  const res = await fetch(`${API_URL}/GitHub/commits/${owner}/${repo}`);
+  if (!res.ok) throw new Error("Error fetching commits");
+  return res.json();
+}
 
 
 

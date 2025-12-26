@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -72,7 +72,7 @@ builder.Services.AddHttpClient("GitHub", client =>
 
     // Add the authorization header with the GitHub token
     client.DefaultRequestHeaders.Authorization =
-    new AuthenticationHeaderValue("Bearer", builder.Configuration["GitHub:Token"]);
+    new AuthenticationHeaderValue("token", builder.Configuration["GitHub:Token"]);
 
 });
 
@@ -80,7 +80,7 @@ builder.Services.AddHttpClient("GitHub", client =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:3000") // Adjust the URL to match the frontend's address
+        policy => policy.WithOrigins("http://localhost:3000")
                         .AllowAnyHeader()
                         .AllowAnyMethod());
 });
