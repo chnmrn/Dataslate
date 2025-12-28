@@ -1,36 +1,39 @@
 # Dataslate
 
 Dataslate is a small dashboard that integrates projects, tasks, and GitHub repositories into a single interface.
-It allows users to manage projects and tasks, visualize metrics, check latest commits, and inspect repository collaborators.  
-It was programmed to work as a task manager to take notes or reminders of task you have to do on your projects, without making actual changes on them in github to avoid confusions.
+It allows users to **manage personal projects and tasks, visualize progress metrics**, and **inspect GitHub repository activity (commits and collaborators)** - 
+without making any changes to the repositories, avoiding unintended modifications or confusion.
 
 ## Installation
 ### 1. Clone the repository
 
-While I was checking configurations of the GitHub API, I realized **if the project is public, it will only show the commits**, that's why I **Highly recommend**
-you to follow the next steps:
 ```bash
-git clone https://github.com/yourusername/dataslate.git
+git clone https://github.com/chnmrn/dataslate.git
 cd dataslate
-git remote set-url origin https://github.com/tuusuario/tu-repo-privado.git
-git push -u origin main
 ```
-After cloning your repo, make it private so you besides checking the commits you can also see the collaborators form a project
 
 ### 2. Backend configuration (ASP.NET Core)
 For this project you will need to provide tokens (JWT & GitHub).
 
-They are provided to the backend, check the configuration.
-Required variables:
+They are provided to the backend, check the appsettings.json, there you will find the following code:
 
 ```C#
-GITHUB_TOKEN=yourGitHubToken
-JWT_KEY=yourJWTToken
+{
+  "GitHub": {
+    "Token": "your_github_token_here"
+  },
+  "Jwt": {
+    "Key": "your_jwt_secret"
+  }
+}
 ```
 These variables are consumed exclusively by the ASP.NET Core API.
 
-For the GitHub Token, be sure to select the options: `repo`, `read:user` and `read:org`  
-Try to avoid using `write:repo` or `delete;repo` because it could actually make changes your repositories
+Create a token in GitHub and insert it in the project.  
+For the GitHub Token, be sure to select **ONLY** the options: `repo`, `read:user` and `read:org`  
+Try to **avoid** using `write:repo` or `delete;repo` 
+
+**IMPORTANT:** If no GitHub token is provided, GitHub-related features will be disabled by design.
 
 ### 3. Run the projects
 Back End **(ASP.NET Core)**:
@@ -38,13 +41,15 @@ Back End **(ASP.NET Core)**:
 dotnet run
 ```  
 Front End **(Next.js)**: 
-```bash 
+```bash
+cd dataslatefront-end
 npm install
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser #(For powershell)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser #(For powershell - Optional)
 npm run dev
 ```
-  
-The frontend communicates with the backend API and does not handle any sensitive credentials.
+
+The frontend communicates with the backend API and does not handle any sensitive credentials.  
+You need to do `npm install` in order to download Next.js for the project
 
 ## Backend (ASP.NET Core)
 
